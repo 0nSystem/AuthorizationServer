@@ -45,12 +45,10 @@ public class Oauth2RegisteredClient {
     @Column(name = "client_name", nullable = false, length = 200)
     private String clientName;
 
-    @ManyToOne
-    @JoinColumn(name = "client_settings_id")
+    @OneToOne(mappedBy = "registeredClient")
     private Oauth2RegisteredClientAuthorizationClientSetting clientSettings;
 
-    @ManyToOne
-    @JoinColumn(name = "token_settings_id")
+    @OneToOne(mappedBy = "registeredClient")
     private Oauth2RegisteredClientTokenSetting tokenSettings;
 
     @ManyToMany

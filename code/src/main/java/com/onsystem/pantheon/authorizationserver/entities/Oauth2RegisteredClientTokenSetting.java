@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 
+import java.util.UUID;
+
 import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_AUTHORIZATION;
 
 @Getter
@@ -16,10 +18,11 @@ import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_AUTHORIZ
 @Entity
 @Table(schema = SCHEME_AUTHORIZATION, name = "oauth2_registered_client_token_settings")
 public class Oauth2RegisteredClientTokenSetting {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    @OneToOne
+    @JoinColumn(name = "registered_client_id", unique = true)
+    private Oauth2RegisteredClient registeredClient;
 
     @NotNull
     @Column(name = "authorization_code_time_to_live", nullable = false)

@@ -84,32 +84,6 @@ CREATE TABLE "authorization".authorization_server_settings
     constraint authorization_server_settings_pk PRIMARY KEY (id)
 );
 
-CREATE TYPE signature_algorithm AS ENUM ('RS256', 'RS384', 'RS512','ES256','ES384','ES512','PS256','PS384','PS512');
-CREATE TYPE oauth2_token_format AS ENUM ('self-contained','reference');
-
-create table "authorization".oauth2_registered_client_token_settings
-(
-    id                              serial,
-    authorization_code_time_to_live float               NOT NULL,
-    access_token_time_to_live       float               NOT NULL,
-    access_token_format             oauth2_token_format NOT NULL,
-    device_code_time_to_live        float               NOT NULL,
-    reuse_refresh_tokens            bool                NOT NULL,
-    refresh_token_time_to_live      float               NOT NULL,
-    id_token_signature_algorithm    signature_algorithm NOT NULL,
-    constraint oauth2_registered_client_token_settings_pk PRIMARY KEY (id)
-);
-
-create table "authorization".oauth2_registered_client_authorization_client_settings
-(
-    id                                              serial,
-    require_proof_key                               bool DEFAULT false,
-    require_authorization_consent                   bool DEFAULT true,
-    jwt_set_url                                     varchar(1000),
-    token_endpoint_authentication_signing_algorithm signature_algorithm,
-    constraint oauth2_registered_client_authorization_client_settings_pk PRIMARY KEY (id)
-);
-
 CREATE TABLE "authorization".oauth2_registered_client
 (
     id                  uuid      DEFAULT gen_random_uuid(),
@@ -117,10 +91,36 @@ CREATE TABLE "authorization".oauth2_registered_client
     user_id             int references "users"."user" (id_user)                  NOT NULL,
     client_id_issued_at timestamp DEFAULT CURRENT_TIMESTAMP                      NOT NULL,
     client_name         varchar(200)                                             NOT NULL,
-    client_settings_id  int references "authorization".oauth2_registered_client_authorization_client_settings (id),
-    token_settings_id   int references "authorization".oauth2_registered_client_token_settings (id),
     PRIMARY KEY (id)
 );
+
+CREATE TYPE signature_algorithm AS ENUM ('RS256', 'RS384', 'RS512','ES256','ES384','ES512','PS256','PS384','PS512');
+CREATE TYPE oauth2_token_format AS ENUM ('self-contained','reference');
+
+create table "authorization".oauth2_registered_client_token_settings
+(
+    registered_client_id            uuid                 not null references "authorization".oauth2_registered_client (id),
+    authorization_code_time_to_live float               NOT NULL,
+    access_token_time_to_live       float               NOT NULL,
+    access_token_format             oauth2_token_format NOT NULL,
+    device_code_time_to_live        float               NOT NULL,
+    reuse_refresh_tokens            bool                NOT NULL,
+    refresh_token_time_to_live      float               NOT NULL,
+    id_token_signature_algorithm    signature_algorithm NOT NULL,
+    PRIMARY KEY (registered_client_id)
+);
+
+create table "authorization".oauth2_registered_client_authorization_client_settings
+(
+    registered_client_id                            uuid not null references "authorization".oauth2_registered_client (id),
+    require_proof_key                               bool DEFAULT false,
+    require_authorization_consent                   bool DEFAULT true,
+    jwt_set_url                                     varchar(1000),
+    token_endpoint_authentication_signing_algorithm signature_algorithm,
+    PRIMARY KEY (registered_client_id)
+);
+
+
 
 create table "authorization".oauth2_authorization_post_logout_redirect_uris
 (

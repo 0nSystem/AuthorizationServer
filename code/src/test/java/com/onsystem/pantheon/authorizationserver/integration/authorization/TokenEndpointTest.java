@@ -29,7 +29,8 @@ public class TokenEndpointTest {
 
     private static Stream<String> caseGetTokenWithGetRequest() {
         return Stream.of(
-                "grant_type=client_credentials&client_id=srvauthorizationserver&client_secret=password"
+                "grant_type=client_credentials& username=onsystem_name &password=password& client_id=srvauthorizationserver& client_secret=password",
+                "grant_type=password&username=onsystem_name&password=password&client_id=srvauthorizationserver"
         );
     }
 
@@ -45,8 +46,14 @@ public class TokenEndpointTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("token_type").value("Bearer"))
                 .andExpect(MockMvcResultMatchers.jsonPath("expires_in").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("access_token").isNotEmpty());
-
     }
 
 
+    /*
+        Example with basic header authorization
+     */
+
+    /*
+    Refresh token
+     */
 }

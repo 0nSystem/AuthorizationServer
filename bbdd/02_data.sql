@@ -19,10 +19,6 @@ $$
                 '/connect/register', '/userinfo',
                 '/connect/logout');
 
-        INSERT INTO "authorization".oauth2_registered_client_authorization_client_settings
-        (require_proof_key, require_authorization_consent, jwt_set_url, token_endpoint_authentication_signing_algorithm)
-        VALUES (false, true, null, 'PS512');
-
         INSERT INTO "authorization".oauth2_authorization_methods
             (authorization_methods_value)
         VALUES ('client_secret_basic'),
@@ -40,18 +36,6 @@ $$
                ('urn:ietf:params:oauth:grant-type:jwt-bearer'),
                ('urn:ietf:params:oauth:grant-type:device_code');
 
-        INSERT INTO "authorization".oauth2_registered_client_authorization_client_settings
-        (require_proof_key, require_authorization_consent, jwt_set_url, token_endpoint_authentication_signing_algorithm)
-        VALUES (true, null, null, null);
-
-        INSERT INTO "authorization".oauth2_registered_client_token_settings
-        (authorization_code_time_to_live, access_token_time_to_live,
-         access_token_format, device_code_time_to_live, reuse_refresh_tokens,
-         refresh_token_time_to_live, id_token_signature_algorithm)
-        VALUES (100000000, 100000000,
-                'self-contained', 100000000, false,
-                100000000, 'RS256');
-
         INSERT INTO users."user"
             (name, surname, email, login, password, high_date, high_id_user)
         VALUES ('srvauthorizationserver', 'srvauthorizationserver', 'srvauthorizationserver@protom.me',
@@ -67,9 +51,22 @@ $$
         VALUES ('authorization-server', 'AuthorizationServer', CURRENT_TIMESTAMP, 1);
 
         INSERT INTO "authorization".oauth2_registered_client
-        (application_id, user_id, client_name, client_settings_id, token_settings_id)
-        VALUES (1, 1, 'oauthauthorizationserver', 1, 1)
+            (application_id, user_id, client_name)
+        VALUES (1, 1, 'oauthauthorizationserver')
         RETURNING id INTO oauth2_registered_client_UUID_Generated;
+
+        INSERT INTO "authorization".oauth2_registered_client_authorization_client_settings
+        (registered_client_id, require_proof_key, require_authorization_consent, jwt_set_url,
+         token_endpoint_authentication_signing_algorithm)
+        VALUES (oauth2_registered_client_UUID_Generated, true, null, null, null);
+
+        INSERT INTO "authorization".oauth2_registered_client_token_settings
+        (registered_client_id, authorization_code_time_to_live, access_token_time_to_live,
+         access_token_format, device_code_time_to_live, reuse_refresh_tokens,
+         refresh_token_time_to_live, id_token_signature_algorithm)
+        VALUES (oauth2_registered_client_UUID_Generated, 100000000, 100000000,
+                'self-contained', 100000000, false,
+                100000000, 'RS256');
 
         RAISE NOTICE 'assing uuid: %', oauth2_registered_client_UUID_Generated;
 

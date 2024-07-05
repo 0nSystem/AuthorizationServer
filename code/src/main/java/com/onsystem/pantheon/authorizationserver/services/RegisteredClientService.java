@@ -22,8 +22,7 @@ public class RegisteredClientService implements RegisteredClientRepository {
     @Override
     public void save(RegisteredClient registeredClient) {
         final Oauth2RegisteredClient oauth2RegisteredClient = aMapperRegisteredClient.toOauth2RegisteredClient(registeredClient);
-        //TODO update
-        //oauth2RegisteredRepository.save(oauth2RegisteredClient);
+        oauth2RegisteredRepository.save(oauth2RegisteredClient);
     }
 
     @Override
