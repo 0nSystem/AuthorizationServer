@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Transactional
 public class RegisteredClientService implements RegisteredClientRepository {
 
@@ -27,13 +29,14 @@ public class RegisteredClientService implements RegisteredClientRepository {
 
     @Override
     public RegisteredClient findById(String id) {
-        return oauth2RegisteredRepository.findById(Integer.valueOf(id))
+        return oauth2RegisteredRepository.findById(UUID.fromString(id))
                 .map(aMapperRegisteredClient::toRegisteredClient)
                 .orElse(null);
     }
 
     @Override
     public RegisteredClient findByClientId(String clientId) {
+        //Review in starting clientId is a user login and now use in grant-type 'password'
         return oauth2RegisteredRepository.findByClientId(clientId)
                 .map(aMapperRegisteredClient::toRegisteredClient)
                 .orElse(null);

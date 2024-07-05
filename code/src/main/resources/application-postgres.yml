@@ -3,7 +3,7 @@ auth:
   configurationSettingsId: 1
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/management
+    url: jdbc:postgresql://localhost:5432/management?stringtype=unspecified
     username: postgres
     password: postgres
   jpa:

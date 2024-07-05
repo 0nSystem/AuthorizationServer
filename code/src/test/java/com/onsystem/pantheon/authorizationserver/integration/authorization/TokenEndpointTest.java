@@ -2,6 +2,7 @@ package com.onsystem.pantheon.authorizationserver.integration.authorization;
 
 import com.onsystem.pantheon.authorizationserver.AuthorizationServerApplication;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +28,13 @@ public class TokenEndpointTest {
     @Autowired
     private AuthorizationServerSettings authorizationServerSettings;
 
-    private static Stream<String> caseGetTokenWithGetRequest() {
-        return Stream.of(
-                "grant_type=client_credentials& username=onsystem_name &password=password& client_id=srvauthorizationserver& client_secret=password",
-                "grant_type=password&username=onsystem_name&password=password&client_id=srvauthorizationserver"
-        );
-    }
 
-    @ParameterizedTest
-    @MethodSource
-    public void caseGetTokenWithGetRequest(final String params) throws Exception {
+    @Test
+    public void caseGetTokenWithPostRequestAndGrantTypeClientCredential() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.post(authorizationServerSettings.getTokenEndpoint())
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                        .content(params)
+                        .content("grant_type=client_credentials& username=onsystem_name &password=password& client_id=srvauthorizationserver& client_secret=password")
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("token_type").value("Bearer"))

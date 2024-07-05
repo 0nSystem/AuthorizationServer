@@ -99,7 +99,7 @@ CREATE TYPE oauth2_token_format AS ENUM ('self-contained','reference');
 
 create table "authorization".oauth2_registered_client_token_settings
 (
-    registered_client_id            uuid                 not null references "authorization".oauth2_registered_client (id),
+    registered_client_id            uuid                NOT NULL references "authorization".oauth2_registered_client (id),
     authorization_code_time_to_live float               NOT NULL,
     access_token_time_to_live       float               NOT NULL,
     access_token_format             oauth2_token_format NOT NULL,
@@ -113,8 +113,8 @@ create table "authorization".oauth2_registered_client_token_settings
 create table "authorization".oauth2_registered_client_authorization_client_settings
 (
     registered_client_id                            uuid not null references "authorization".oauth2_registered_client (id),
-    require_proof_key                               bool DEFAULT false,
-    require_authorization_consent                   bool DEFAULT true,
+    require_proof_key                               bool not null DEFAULT false,
+    require_authorization_consent                   bool not null DEFAULT true,
     jwt_set_url                                     varchar(1000),
     token_endpoint_authentication_signing_algorithm signature_algorithm,
     PRIMARY KEY (registered_client_id)

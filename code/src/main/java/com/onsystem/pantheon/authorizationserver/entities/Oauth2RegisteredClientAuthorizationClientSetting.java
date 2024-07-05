@@ -7,8 +7,6 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 
-import java.util.UUID;
-
 import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_AUTHORIZATION;
 
 @Builder
@@ -39,7 +37,7 @@ public class Oauth2RegisteredClientAuthorizationClientSetting {
     @Size(max = 100)
     @Column(name = "token_endpoint_authentication_signing_algorithm", length = 100)
     @Enumerated(EnumType.STRING)
-    @Convert(converter = SignatureAlgorithmConverter.class)
+    //@Convert(converter = SignatureAlgorithmConverter.class)
     private SignatureAlgorithm tokenEndpointAuthenticationSigningAlgorithm;
 
 }

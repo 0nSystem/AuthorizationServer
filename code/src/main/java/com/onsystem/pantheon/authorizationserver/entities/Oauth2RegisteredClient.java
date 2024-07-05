@@ -45,10 +45,10 @@ public class Oauth2RegisteredClient {
     @Column(name = "client_name", nullable = false, length = 200)
     private String clientName;
 
-    @OneToOne(mappedBy = "registeredClient")
+    @OneToOne(mappedBy = "registeredClient", cascade = CascadeType.ALL) //TODO save and update
     private Oauth2RegisteredClientAuthorizationClientSetting clientSettings;
 
-    @OneToOne(mappedBy = "registeredClient")
+    @OneToOne(mappedBy = "registeredClient", cascade = CascadeType.ALL) //TODO save and update
     private Oauth2RegisteredClientTokenSetting tokenSettings;
 
     @ManyToMany

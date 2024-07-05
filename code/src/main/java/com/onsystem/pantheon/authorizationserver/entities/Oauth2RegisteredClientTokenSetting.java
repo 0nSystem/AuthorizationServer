@@ -9,8 +9,6 @@ import lombok.Setter;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 
-import java.util.UUID;
-
 import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_AUTHORIZATION;
 
 @Getter
@@ -48,7 +46,7 @@ public class Oauth2RegisteredClientTokenSetting {
     private OAuth2TokenFormat accessTokenFormat;
 
     @Enumerated(EnumType.STRING)
-    @Convert(converter = SignatureAlgorithmConverter.class)
+    //@Convert(converter = SignatureAlgorithmConverter.class)
     @Column(name = "id_token_signature_algorithm", columnDefinition = "signature_algorithm not null")
     private SignatureAlgorithm idTokenSignatureAlgorithm;
 }

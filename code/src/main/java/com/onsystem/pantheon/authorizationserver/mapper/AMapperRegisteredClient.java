@@ -1,6 +1,7 @@
 package com.onsystem.pantheon.authorizationserver.mapper;
 
 import com.onsystem.pantheon.authorizationserver.entities.Oauth2RegisteredClient;
+import com.onsystem.pantheon.authorizationserver.repositories.Oauth2RegisteredRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,19 +22,22 @@ public abstract class AMapperRegisteredClient {
     @Autowired
     private IMapperAuthorizationGrandType iMapperAuthorizationGrandType;
     @Autowired
-    private IMapperClientSettings iMapperClientSettings;
+    private AMapperClientSettings aMapperClientSettings;
     @Autowired
     private IMapperScope iMapperScope;
+
+    @Autowired
+    private Oauth2RegisteredRepository oauth2RegisteredRepository;
 
 
     public RegisteredClient toRegisteredClient(Oauth2RegisteredClient oauth2RegisteredClient) {
         return RegisteredClient.withId(String.valueOf(oauth2RegisteredClient.getId()))
                 .clientId(oauth2RegisteredClient.getUser().getLogin())
+                .clientSecret(oauth2RegisteredClient.getUser().getPassword())
                 .clientName(oauth2RegisteredClient.getClientName())
                 .clientIdIssuedAt(oauth2RegisteredClient.getClientIdIssuedAt())
-                .clientSecret(oauth2RegisteredClient.getUser().getPassword())
                 .clientSecretExpiresAt(null) //TODO
-                .clientSettings(iMapperClientSettings.toClientSettings(oauth2RegisteredClient.getClientSettings())) //TODO Change model
+                .clientSettings(aMapperClientSettings.toClientSettings(oauth2RegisteredClient.getClientSettings()))
                 .clientAuthenticationMethods(l -> l.addAll(iMapperAuthenticationMethod.toClientAuthenticationMethods(oauth2RegisteredClient.getAuthorizationMethods())))
                 .authorizationGrantTypes(l -> l.addAll(iMapperAuthorizationGrandType.toAuthorizationGrantTypes(oauth2RegisteredClient.getGrantTypes())))
                 .scopes(l -> l.addAll(iMapperScope.toStr(oauth2RegisteredClient.getScopes())))
@@ -42,15 +46,27 @@ public abstract class AMapperRegisteredClient {
     }
 
     public Oauth2RegisteredClient toOauth2RegisteredClient(RegisteredClient registeredClient) {
-        return Oauth2RegisteredClient.builder()
-                .id(UUID.fromString(registeredClient.getId()))
-                .clientName(registeredClient.getClientName())
+        final UUID idRegisteredClient = UUID.fromString(registeredClient.getId());
+
+        final Oauth2RegisteredClient oauth2RegisteredClientMapped = Oauth2RegisteredClient.builder()
+                .id(idRegisteredClient)
                 .clientIdIssuedAt(registeredClient.getClientIdIssuedAt())
-                .clientSettings(iMapperClientSettings.oauth2RegisteredClientAuthorizationClientSetting(registeredClient.getClientSettings())) //TODO change model
-                .authorizationMethods(iMapperAuthenticationMethod.toOauth2AuthorizationMethods(registeredClient.getClientAuthenticationMethods()))
-                .grantTypes(iMapperAuthorizationGrandType.toOauth2AuthorizationGrantType(registeredClient.getAuthorizationGrantTypes()))
-                .scopes(iMapperScope.oauth2Scopes(registeredClient.getScopes()))
                 .build();
+
+        final Oauth2RegisteredClient registeredClientBBDD = oauth2RegisteredRepository.findById(idRegisteredClient)
+                .orElseThrow();
+        oauth2RegisteredClientMapped.setClientName(registeredClientBBDD.getClientName());
+        oauth2RegisteredClientMapped.setApplication(registeredClientBBDD.getApplication());
+        oauth2RegisteredClientMapped.setUser(registeredClientBBDD.getUser());
+        oauth2RegisteredClientMapped.setClientSettings(registeredClientBBDD.getClientSettings());
+        oauth2RegisteredClientMapped.setTokenSettings(registeredClientBBDD.getTokenSettings());
+        oauth2RegisteredClientMapped.setGrantTypes(registeredClientBBDD.getGrantTypes());
+        oauth2RegisteredClientMapped.setScopes(registeredClientBBDD.getScopes());
+        oauth2RegisteredClientMapped.setAuthorizationMethods(registeredClientBBDD.getAuthorizationMethods());
+        oauth2RegisteredClientMapped.setRedirectUris(registeredClientBBDD.getRedirectUris());
+        oauth2RegisteredClientMapped.setLogoutRedirectUris(registeredClientBBDD.getLogoutRedirectUris());
+
+        return oauth2RegisteredClientMapped;
     }
 
 
