@@ -4,7 +4,7 @@ spring:
   application:
     name: Authorization-Server
   profiles:
-    active: mock
+    active: postgres
 logging:
   level:
     root: info

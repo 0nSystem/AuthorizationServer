@@ -1,10 +1,9 @@
 package com.onsystem.pantheon.authorizationserver.services;
 
-import com.onsystem.pantheon.authorizationserver.entities.AuthorizationServerSetting;
+import com.onsystem.pantheon.authorizationserver.entities.AuthorizationServerSettings;
 import com.onsystem.pantheon.authorizationserver.ifc.IAuthorizationServerSettingsService;
 import com.onsystem.pantheon.authorizationserver.repositories.AuthorizationSettingsRepository;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 
 
 public class AuthorizationServerSettingsService implements IAuthorizationServerSettingsService {
@@ -18,25 +17,25 @@ public class AuthorizationServerSettingsService implements IAuthorizationServerS
     }
 
     @Override
-    public AuthorizationServerSettings getAuthorizationServerSettings() {
-        final AuthorizationServerSetting authorizationServerSettings = authorizationSettingsRepository.findById(configurationAuthorizationSettingsId)
+    public org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings getAuthorizationServerSettings() {
+        final AuthorizationServerSettings authorizationServerSettings = authorizationSettingsRepository.findById(configurationAuthorizationSettingsId)
                 .orElseThrow();
         return map(authorizationServerSettings);
     }
 
-    private @NotNull AuthorizationServerSettings map(final @NotNull AuthorizationServerSetting authorizationServerSetting) {
-        return AuthorizationServerSettings.builder()
+    private @NotNull org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings map(final @NotNull AuthorizationServerSettings authorizationServerSettings) {
+        return org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings.builder()
                 //.issuer(authorizationServerSetting.getIssuer())
-                .authorizationEndpoint(authorizationServerSetting.getAuthorizationEndpoint())
-                .deviceAuthorizationEndpoint(authorizationServerSetting.getDeviceAuthorizationEndpoint())
-                .deviceVerificationEndpoint(authorizationServerSetting.getDeviceVerificationEndpoint())
-                .tokenEndpoint(authorizationServerSetting.getTokenEndpoint())
-                .jwkSetEndpoint(authorizationServerSetting.getJwkSetEndpoint())
-                .tokenRevocationEndpoint(authorizationServerSetting.getTokenRevocationEndpoint())
-                .tokenIntrospectionEndpoint(authorizationServerSetting.getTokenIntrospectionEndpoint())
-                .oidcClientRegistrationEndpoint(authorizationServerSetting.getOidcClientRegistrationEndpoint())
-                .oidcUserInfoEndpoint(authorizationServerSetting.getOidcUserInfoEndpoint())
-                .oidcLogoutEndpoint(authorizationServerSetting.getOidcLogoutEndpoint())
+                .authorizationEndpoint(authorizationServerSettings.getAuthorizationEndpoint())
+                .deviceAuthorizationEndpoint(authorizationServerSettings.getDeviceAuthorizationEndpoint())
+                .deviceVerificationEndpoint(authorizationServerSettings.getDeviceVerificationEndpoint())
+                .tokenEndpoint(authorizationServerSettings.getTokenEndpoint())
+                .jwkSetEndpoint(authorizationServerSettings.getJwkSetEndpoint())
+                .tokenRevocationEndpoint(authorizationServerSettings.getTokenRevocationEndpoint())
+                .tokenIntrospectionEndpoint(authorizationServerSettings.getTokenIntrospectionEndpoint())
+                .oidcClientRegistrationEndpoint(authorizationServerSettings.getOidcClientRegistrationEndpoint())
+                .oidcUserInfoEndpoint(authorizationServerSettings.getOidcUserInfoEndpoint())
+                .oidcLogoutEndpoint(authorizationServerSettings.getOidcLogoutEndpoint())
                 .build();
 
     }

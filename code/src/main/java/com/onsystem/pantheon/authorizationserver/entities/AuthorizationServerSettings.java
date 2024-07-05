@@ -12,7 +12,7 @@ import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_AUTHORIZ
 @Setter
 @Entity
 @Table(schema = SCHEME_AUTHORIZATION,name = "authorization_server_settings")
-public class AuthorizationServerSetting {
+public class AuthorizationServerSettings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

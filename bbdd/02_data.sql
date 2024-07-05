@@ -1,4 +1,3 @@
-
 \c management;
 
 DO
@@ -74,6 +73,9 @@ $$
 
         RAISE NOTICE 'assing uuid: %', oauth2_registered_client_UUID_Generated;
 
+        insert into "authorization".oauth2_authorization_redirect_uris
+            (id, url)
+        VALUES (oauth2_registered_client_UUID_Generated, 'http://localhost:9090');
 
         -- Insertar datos en oauth2_registered_client_authorization_grant_types
         INSERT INTO "authorization".oauth2_registered_client_authorization_grant_types
