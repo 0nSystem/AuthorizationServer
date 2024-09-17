@@ -6,13 +6,16 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
+
+import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_APPLICATIONS;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "application")
+@Table(schema = SCHEME_APPLICATIONS, name = "application")
 public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,11 +31,11 @@ public class Application {
     @Column(name = "description")
     private String description;
 
+    @CreatedDate
     @NotNull
     @Column(name = "high_date", nullable = false)
     private Instant highDate;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "high_id_user", nullable = false)
     private User highIdUser;

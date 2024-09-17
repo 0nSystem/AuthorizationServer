@@ -5,13 +5,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
+import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_AUTHORIZATION;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "authorization_server_settings")
-public class AuthorizationServerSetting {
+@Table(schema = SCHEME_AUTHORIZATION,name = "authorization_server_settings")
+public class AuthorizationServerSettings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,7 +18,7 @@ public class Oauth2AuthorizationRedirectUrisId implements java.io.Serializable {
     private static final long serialVersionUID = 8752611266224851484L;
     @NotNull
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private UUID id;
 
     @Size(max = 1000)
     @NotNull

@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ public class Oauth2RegisteredClientScopeId implements java.io.Serializable {
     private static final long serialVersionUID = 8330177194521937556L;
     @NotNull
     @Column(name = "id_registered_client", nullable = false)
-    private Integer idRegisteredClient;
+    private UUID idRegisteredClient;
 
     @NotNull
     @Column(name = "id_scope", nullable = false)

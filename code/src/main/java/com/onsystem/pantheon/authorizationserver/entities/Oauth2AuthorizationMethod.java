@@ -6,10 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_AUTHORIZATION;
+
 @Getter
 @Setter
 @Entity
-@Table(name = "oauth2_authorization_methods")
+@Table(schema = SCHEME_AUTHORIZATION, name = "oauth2_authorization_methods")
 public class Oauth2AuthorizationMethod {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

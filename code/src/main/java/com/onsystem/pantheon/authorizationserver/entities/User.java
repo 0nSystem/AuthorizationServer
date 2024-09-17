@@ -9,10 +9,12 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 
+import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_USER;
+
 @Getter
 @Setter
 @Entity
-@Table(name = "\"user\"", uniqueConstraints = {
+@Table(schema = SCHEME_USER, name = "\"user\"", uniqueConstraints = {
         @UniqueConstraint(name = "user_email_key", columnNames = {"email"}),
         @UniqueConstraint(name = "user_login_key", columnNames = {"login"})
 })

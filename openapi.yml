@@ -1,0 +1,197 @@
+openapi: 3.0.0
+info:
+  title: Authorization Server API
+  description: API del servidor de autorización de Spring Boot
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Servidor local de desarrollo
+
+paths:
+  /oauth/token:
+    post:
+      summary: Obtener token de acceso
+      description: Obtiene un token de acceso mediante credenciales de cliente
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  example: password
+                username:
+                  type: string
+                  example: user
+                password:
+                  type: string
+                  example: pass
+                client_id:
+                  type: string
+                  example: client-id
+                client_secret:
+                  type: string
+                  example: client-secret
+      responses:
+        '200':
+          description: Token de acceso generado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                  expires_in:
+                    type: integer
+                  refresh_token:
+                    type: string
+        '400':
+          description: Solicitud incorrecta
+        '401':
+          description: No autorizado
+
+  /oauth/check_token:
+    post:
+      summary: Verificar token de acceso
+      description: Verifica la validez de un token de acceso
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: access-token
+      responses:
+        '200':
+          description: Token válido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_name:
+                    type: string
+                  scope:
+                    type: array
+                    items:
+                      type: string
+                  active:
+                    type: boolean
+                  exp:
+                    type: integer
+                  authorities:
+                    type: array
+                    items:
+                      type: string
+        '400':
+          description: Solicitud incorrecta
+        '401':
+          description: No autorizado
+
+  /oauth/authorize:
+    get:
+      summary: Obtener código de autorización
+      description: Endpoint para el flujo de autorización
+      parameters:
+        - name: response_type
+          in: query
+          required: true
+          schema:
+            type: string
+            example: code
+        - name: client_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: client-id
+        - name: redirect_uri
+          in: query
+          required: true
+          schema:
+            type: string
+            example: http://localhost:8080/callback
+        - name: scope
+          in: query
+          required: true
+          schema:
+            type: string
+            example: read
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+            example: xyz
+      responses:
+        '200':
+          description: Redirige al URI de redirección con el código de autorización
+        '400':
+          description: Solicitud incorrecta
+        '401':
+          description: No autorizado
+
+  /oauth/token_key:
+    get:
+      summary: Obtener clave pública
+      description: Obtiene la clave pública utilizada para firmar los tokens JWT
+      responses:
+        '200':
+          description: Clave pública obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  alg:
+                    type: string
+                  value:
+                    type: string
+        '401':
+          description: No autorizado
+
+  /oauth/revoke_token:
+    post:
+      summary: Revocar token
+      description: Revoca un token de acceso o de refresco
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: token-to-revoke
+                client_id:
+                  type: string
+                  example: client-id
+                client_secret:
+                  type: string
+                  example: client-secret
+      responses:
+        '200':
+          description: Token revocado correctamente
+        '400':
+          description: Solicitud incorrecta
+        '401':
+          description: No autorizado
+
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: /oauth/token
+          scopes: {}
+      description: Flujo OAuth2 con grant type password

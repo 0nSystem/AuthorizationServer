@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ public class Oauth2RegisteredClientAuthorizationGrantTypeId implements java.io.S
     private static final long serialVersionUID = -9050225358820272972L;
     @NotNull
     @Column(name = "oauth2_registered_client_id", nullable = false)
-    private Integer oauth2RegisteredClientId;
+    private UUID oauth2RegisteredClientId;
 
     @NotNull
     @Column(name = "authorization_grant_types_id", nullable = false)

@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: Authorization-Server
+  profiles:
+    active: postgres
 logging:
   level:
     root: info

@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_AUTHORIZATION;
+
 @Getter
 @Setter
 @Entity
-@Table(name = "oauth2_registered_client_authorization_grant_types")
+@Table(schema = SCHEME_AUTHORIZATION,name = "oauth2_registered_client_authorization_grant_types")
 public class Oauth2RegisteredClientAuthorizationGrantType {
     @EmbeddedId
     private Oauth2RegisteredClientAuthorizationGrantTypeId id;
