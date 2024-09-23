@@ -3,6 +3,7 @@ package com.onsystem.pantheon.authorizationserver.services;
 import com.onsystem.pantheon.authorizationserver.mapper.AMapperOAuth2Authorization;
 import com.onsystem.pantheon.authorizationserver.repositories.OAuth2AuthorizationRepository;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.data.jpa.domain.Specification;
@@ -67,7 +68,8 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
                 };
                 return criteriaBuilder.or(predicatesAllTokens);
             } else {
-                return criteriaBuilder.equal(root.get(tokenType.getValue().concat("_value")), token);
+                final Path<Object> field = root.get(tokenType.getValue().concat("_value")); //TODO error not found column
+                return criteriaBuilder.equal(field, token);
             }
 
         };
