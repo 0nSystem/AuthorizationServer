@@ -1,53 +1,80 @@
 package com.onsystem.pantheon.authorizationserver.integration.authorization;
 
-import com.onsystem.pantheon.authorizationserver.AuthorizationServerApplication;
-import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
-import java.util.stream.Stream;
+import java.io.IOException;
+import java.util.Map;
 
-@SpringBootTest(classes = AuthorizationServerApplication.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = {"postgres"})
-@AutoConfigureMockMvc
-@Slf4j
 public class TokenEndpointTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private TestRestTemplate restTemplate;
     @Autowired
     private AuthorizationServerSettings authorizationServerSettings;
 
 
     @Test
-    public void caseGetTokenWithPostRequestAndGrantTypeClientCredential() throws Exception {
-        mockMvc
-                .perform(MockMvcRequestBuilders.post(authorizationServerSettings.getTokenEndpoint())
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                        .content("grant_type=client_credentials& username=onsystem_name &password=password& client_id=srvauthorizationserver& client_secret=password")
-                )
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("token_type").value("Bearer"))
-                .andExpect(MockMvcResultMatchers.jsonPath("expires_in").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("access_token").isNotEmpty());
+    public void whenRequestTokenPostAndClientCredentialsIsCorrect() throws Exception {
+        final ResponseEntity<String> response = postClientCredentialsCorrectRequest(authorizationServerSettings.getTokenEndpoint());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        validationAccessToken(response.getBody());
+
+    }
+
+    public void validationAccessToken(String accessTokenResponse) throws IOException {
+        final Map<String, Object> body = RequestUtils.readString(accessTokenResponse);
+        Assertions.assertNotNull(accessTokenResponse);
+        Assertions.assertNotNull(body.get(OAuth2ParameterNames.ACCESS_TOKEN));
+        Assertions.assertEquals("Bearer", body.get(OAuth2ParameterNames.TOKEN_TYPE));
+        Assertions.assertNotNull(body.get(OAuth2ParameterNames.EXPIRES_IN));
     }
 
 
     /*
-        Example with basic header authorization
+     * Token Refresh
      */
 
+
+
     /*
-    Refresh token
+    Exchange token
      */
+
+
+    private ResponseEntity<String> postClientCredentialsCorrectRequest(final String tokenEndpoint) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add(OAuth2ParameterNames.GRANT_TYPE, "client_credentials");
+        body.add(OAuth2ParameterNames.USERNAME, "onsystem_name");
+        body.add(OAuth2ParameterNames.PASSWORD, "password");
+        body.add(OAuth2ParameterNames.CLIENT_ID, "srvauthorizationserver");
+        body.add(OAuth2ParameterNames.CLIENT_SECRET, "password");
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+        return restTemplate.postForEntity(tokenEndpoint, request, String.class);
+    }
+
+    public ResultActions validationTokenWhenCorrectResult(ResultActions resultActions) throws Exception {
+        return resultActions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("token_type").value("Bearer"))
+                .andExpect(MockMvcResultMatchers.jsonPath("expires_in").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("access_token").isNotEmpty());
+    }
 }
