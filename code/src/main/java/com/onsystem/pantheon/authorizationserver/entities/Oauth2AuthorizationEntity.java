@@ -1,23 +1,28 @@
 package com.onsystem.pantheon.authorizationserver.entities;
 
+import com.onsystem.pantheon.authorizationserver.entities.converter.OAuth2AccessTokenTypeConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "oauth2_authorization", schema = "authorization")
-public class Oauth2Authorization {
+public class Oauth2AuthorizationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @ColumnDefault("uuid_generate_v4()")
@@ -41,7 +46,8 @@ public class Oauth2Authorization {
     @Size(max = 1000)
     @ColumnDefault("NULL")
     @Column(name = "authorized_scopes", length = 1000)
-    private String authorizedScopes;
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    private String[] authorizedScopes;
 
     @Column(name = "attributes")
     @JdbcTypeCode(SqlTypes.JSON)
@@ -78,15 +84,16 @@ public class Oauth2Authorization {
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> accessTokenMetadata;
 
+    @Convert(converter = OAuth2AccessTokenTypeConverter.class)
     @Size(max = 100)
     @ColumnDefault("NULL")
     @Column(name = "access_token_type", length = 100)
-    private String accessTokenType;
+    private OAuth2AccessToken.TokenType accessTokenType;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @ColumnDefault("NULL")
     @Column(name = "access_token_scopes", columnDefinition = "varchar [](50)")
-    private String[] accessTokenScopes;
+    private Set<String> accessTokenScopes;
 
     @Column(name = "oidc_id_token_value", length = Integer.MAX_VALUE)
     private String oidcIdTokenValue;

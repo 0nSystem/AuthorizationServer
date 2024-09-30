@@ -4,12 +4,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
+import java.util.UUID;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Embeddable
@@ -18,7 +22,7 @@ public class Oauth2AuthorizationConsentId implements java.io.Serializable {
     @Size(max = 100)
     @NotNull
     @Column(name = "registered_client_id", nullable = false, length = 100)
-    private String registeredClientId;
+    private UUID registeredClientId;
 
     @Size(max = 200)
     @NotNull

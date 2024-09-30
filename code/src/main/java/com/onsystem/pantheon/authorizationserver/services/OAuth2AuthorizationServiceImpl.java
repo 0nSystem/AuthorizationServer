@@ -1,5 +1,7 @@
 package com.onsystem.pantheon.authorizationserver.services;
 
+import com.onsystem.pantheon.authorizationserver.entities.Oauth2AuthorizationEntity;
+import com.onsystem.pantheon.authorizationserver.mapper.IMapperAuthorization;
 import com.onsystem.pantheon.authorizationserver.repositories.OAuth2AuthorizationRepository;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.criteria.Path;
@@ -18,22 +20,22 @@ import java.util.UUID;
 public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationService {
 
     private OAuth2AuthorizationRepository oAuth2AuthorizationRepository;
-    private AMapperOAuth2Authorization aMapperOAuth2Authorization;
+    private IMapperAuthorization aMapperOAuth2Authorization;
 
-    public OAuth2AuthorizationServiceImpl(OAuth2AuthorizationRepository oAuth2AuthorizationRepository, AMapperOAuth2Authorization aMapperOAuth2Authorization) {
+    public OAuth2AuthorizationServiceImpl(OAuth2AuthorizationRepository oAuth2AuthorizationRepository, IMapperAuthorization aMapperOAuth2Authorization) {
         this.oAuth2AuthorizationRepository = oAuth2AuthorizationRepository;
         this.aMapperOAuth2Authorization = aMapperOAuth2Authorization;
     }
 
     @Override
     public void save(OAuth2Authorization authorization) {
-        final com.onsystem.pantheon.authorizationserver.entities.OAuth2Authorization oAuth2Authorization = aMapperOAuth2Authorization.toOAuth2Authorization(authorization);
-        oAuth2AuthorizationRepository.save(oAuth2Authorization);
+        final Oauth2AuthorizationEntity oAuth2AuthorizationEntity = aMapperOAuth2Authorization.toEntity(authorization);
+        oAuth2AuthorizationRepository.save(oAuth2AuthorizationEntity);
     }
 
     @Override
     public void remove(OAuth2Authorization authorization) {
-        final com.onsystem.pantheon.authorizationserver.entities.OAuth2Authorization oAuth2Authorization = aMapperOAuth2Authorization.toOAuth2Authorization(authorization);
+        final Oauth2AuthorizationEntity oAuth2Authorization = aMapperOAuth2Authorization.toEntity(authorization);
         oAuth2AuthorizationRepository.delete(oAuth2Authorization);
     }
 
@@ -54,7 +56,7 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
                 .orElse(null);
     }
 
-    private Specification<com.onsystem.pantheon.authorizationserver.entities.OAuth2Authorization> specificationFindByToken(String token, @Nullable OAuth2TokenType tokenType) {
+    private Specification<Oauth2AuthorizationEntity> specificationFindByToken(String token, @Nullable OAuth2TokenType tokenType) {
         return (root, query, criteriaBuilder) -> {
             if (tokenType == null) {
                 final Predicate[] predicatesAllTokens = {

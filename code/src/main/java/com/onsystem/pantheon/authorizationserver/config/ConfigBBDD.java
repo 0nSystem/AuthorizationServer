@@ -1,6 +1,9 @@
 package com.onsystem.pantheon.authorizationserver.config;
 
 import com.onsystem.pantheon.authorizationserver.ifc.IAuthorizationServerSettingsService;
+import com.onsystem.pantheon.authorizationserver.mapper.IMapperAuthorization;
+import com.onsystem.pantheon.authorizationserver.mapper.IMapperAuthorizationConsent;
+import com.onsystem.pantheon.authorizationserver.mapper.IMapperRegisteredClient;
 import com.onsystem.pantheon.authorizationserver.mapper.IMapperUser;
 import com.onsystem.pantheon.authorizationserver.repositories.*;
 import com.onsystem.pantheon.authorizationserver.services.AuthorizationServerSettingsService;
@@ -31,9 +34,9 @@ public class ConfigBBDD {
     @Bean
     public RegisteredClientRepository registeredClientRepository(
             Oauth2RegisteredRepository oauth2RegisteredRepository,
-            AMapperRegisteredClient aMapperRegisteredClient
+            IMapperRegisteredClient iMapperRegisteredClient
     ) {
-        return new RegisteredClientService(oauth2RegisteredRepository, aMapperRegisteredClient);
+        return new RegisteredClientService(oauth2RegisteredRepository, iMapperRegisteredClient);
     }
 
     @Bean
@@ -42,13 +45,13 @@ public class ConfigBBDD {
     }
 
     @Bean
-    public OAuth2AuthorizationService oAuth2AuthorizationService(OAuth2AuthorizationRepository oAuth2AuthorizationRepository, AMapperOAuth2Authorization aMapperOAuth2Authorization) {
+    public OAuth2AuthorizationService oAuth2AuthorizationService(OAuth2AuthorizationRepository oAuth2AuthorizationRepository, IMapperAuthorization aMapperOAuth2Authorization) {
         return new OAuth2AuthorizationServiceImpl(oAuth2AuthorizationRepository, aMapperOAuth2Authorization);
     }
 
 
     @Bean
-    public OAuth2AuthorizationConsentService oAuth2AuthorizationConsentService(OAuth2AuthorizationConsentRepository oAuth2AuthorizationConsentRepository, IMapperOAuthAuthorizationConsent iMapperOAuthAuthorizationConsent) {
+    public OAuth2AuthorizationConsentService oAuth2AuthorizationConsentService(OAuth2AuthorizationConsentRepository oAuth2AuthorizationConsentRepository, IMapperAuthorizationConsent iMapperOAuthAuthorizationConsent) {
         return new com.onsystem.pantheon.authorizationserver.services.OAuth2AuthorizationConsentService(
                 oAuth2AuthorizationConsentRepository, iMapperOAuthAuthorizationConsent
         );

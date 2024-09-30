@@ -36,12 +36,12 @@ $$
                ('urn:ietf:params:oauth:grant-type:jwt-bearer'),
                ('urn:ietf:params:oauth:grant-type:device_code');
 
-        INSERT INTO users."user"
+        INSERT INTO users."userEntity"
             (name, surname, email, login, password, high_date, high_id_user)
         VALUES ('srvauthorizationserver', 'srvauthorizationserver', 'srvauthorizationserver@protom.me',
                 'srvauthorizationserver', '{noop}password', CURRENT_TIMESTAMP, null);
 
-        INSERT INTO users."user"
+        INSERT INTO users."userEntity"
             (name, surname, email, login, password, high_date, high_id_user)
         VALUES ('onsystem_name', 'onsystem_surname', 'onsystem@protom.me',
                 'onsystem', '{noop}password', CURRENT_TIMESTAMP, null);

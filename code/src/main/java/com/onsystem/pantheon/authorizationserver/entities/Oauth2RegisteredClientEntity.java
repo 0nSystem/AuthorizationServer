@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -11,13 +12,15 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "oauth2_registered_client", schema = "authorization")
-public class Oauth2RegisteredClient {
+public class Oauth2RegisteredClientEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @ColumnDefault("uuid_generate_v4()")
@@ -49,25 +52,25 @@ public class Oauth2RegisteredClient {
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "client_authentication_methods", columnDefinition = "varchar [](50) not null")
-    private String[] clientAuthenticationMethods;
+    private Set<String> clientAuthenticationMethods;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "authorization_grant_types", columnDefinition = "varchar [](50) not null")
-    private String[] authorizationGrantTypes;
+    private Set<String> authorizationGrantTypes;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @ColumnDefault("NULL")
     @Column(name = "redirect_uris", columnDefinition = "varchar [](1000)")
-    private String[] redirectUris;
+    private Set<String> redirectUris;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @ColumnDefault("NULL")
     @Column(name = "post_logout_redirect_uris", columnDefinition = "varchar [](1000)")
-    private String[] postLogoutRedirectUris;
+    private Set<String> postLogoutRedirectUris;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "scopes", columnDefinition = "varchar [](50) not null")
-    private String[] scopes;
+    private Set<String> scopes;
 
     @NotNull
     @Column(name = "client_settings", nullable = false)

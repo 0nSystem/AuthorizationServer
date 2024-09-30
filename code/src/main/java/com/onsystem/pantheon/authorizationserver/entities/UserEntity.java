@@ -4,15 +4,18 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
 
+
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "\"user\"", schema = "users")
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_gen")
     @SequenceGenerator(name = "user_id_gen", sequenceName = "user_id_user_seq", allocationSize = 1)
@@ -50,13 +53,13 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "high_id_user")
-    private User highIdUser;
+    private UserEntity highIdUserEntity;
 
     @Column(name = "delete_date")
     private Instant deleteDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delete_id_user")
-    private User deleteIdUser;
+    private UserEntity deleteIdUserEntity;
 
 }

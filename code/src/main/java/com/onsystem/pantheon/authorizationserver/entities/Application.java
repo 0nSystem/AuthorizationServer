@@ -36,13 +36,13 @@ public class Application {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "high_id_user", nullable = false)
-    private com.onsystem.pantheon.authorizationserver.entities.User highIdUser;
+    private UserEntity highIdUserEntity;
 
     @Column(name = "delete_date")
     private Instant deleteDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delete_id_user")
-    private com.onsystem.pantheon.authorizationserver.entities.User deleteIdUser;
+    private UserEntity deleteIdUserEntity;
 
 }
