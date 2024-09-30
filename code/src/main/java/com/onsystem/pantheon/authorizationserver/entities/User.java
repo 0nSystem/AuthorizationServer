@@ -5,22 +5,17 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
-
-import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_USER;
 
 @Getter
 @Setter
 @Entity
-@Table(schema = SCHEME_USER, name = "\"user\"", uniqueConstraints = {
-        @UniqueConstraint(name = "user_email_key", columnNames = {"email"}),
-        @UniqueConstraint(name = "user_login_key", columnNames = {"login"})
-})
+@Table(name = "\"user\"", schema = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_gen")
+    @SequenceGenerator(name = "user_id_gen", sequenceName = "user_id_user_seq", allocationSize = 1)
     @Column(name = "id_user", nullable = false)
     private Integer id;
 

@@ -1,6 +1,5 @@
 package com.onsystem.pantheon.authorizationserver.services;
 
-import com.onsystem.pantheon.authorizationserver.entities.User;
 import com.onsystem.pantheon.authorizationserver.mapper.IMapperUser;
 import com.onsystem.pantheon.authorizationserver.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

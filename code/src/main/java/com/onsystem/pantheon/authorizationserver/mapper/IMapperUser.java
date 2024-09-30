@@ -1,7 +1,6 @@
 package com.onsystem.pantheon.authorizationserver.mapper;
 
 import com.onsystem.pantheon.authorizationserver.dto.UserDTO;
-import com.onsystem.pantheon.authorizationserver.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;

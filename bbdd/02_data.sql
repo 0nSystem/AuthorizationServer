@@ -56,8 +56,7 @@ $$
         RETURNING id INTO oauth2_registered_client_UUID_Generated;
 
         INSERT INTO "authorization".oauth2_registered_client_authorization_client_settings
-        (registered_client_id, require_proof_key, require_authorization_consent, jwt_set_url,
-         token_endpoint_authentication_signing_algorithm)
+        (registered_client_id, require_proof_key, require_authorization_consent, jwt_set_url,token_endpoint_authentication_signing_algorithm)
         VALUES (oauth2_registered_client_UUID_Generated, true, true, null, 'RS256');
 
         INSERT INTO "authorization".oauth2_registered_client_token_settings
