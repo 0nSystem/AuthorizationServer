@@ -1,7 +1,5 @@
 package com.onsystem.pantheon.authorizationserver.services;
 
-import com.onsystem.pantheon.authorizationserver.entities.Oauth2RegisteredClient;
-import com.onsystem.pantheon.authorizationserver.mapper.AMapperRegisteredClient;
 import com.onsystem.pantheon.authorizationserver.repositories.Oauth2RegisteredRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;

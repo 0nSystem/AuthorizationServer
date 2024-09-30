@@ -1,9 +1,6 @@
 package com.onsystem.pantheon.authorizationserver.config;
 
 import com.onsystem.pantheon.authorizationserver.ifc.IAuthorizationServerSettingsService;
-import com.onsystem.pantheon.authorizationserver.mapper.AMapperOAuth2Authorization;
-import com.onsystem.pantheon.authorizationserver.mapper.AMapperRegisteredClient;
-import com.onsystem.pantheon.authorizationserver.mapper.IMapperOAuthAuthorizationConsent;
 import com.onsystem.pantheon.authorizationserver.mapper.IMapperUser;
 import com.onsystem.pantheon.authorizationserver.repositories.*;
 import com.onsystem.pantheon.authorizationserver.services.AuthorizationServerSettingsService;

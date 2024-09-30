@@ -1,6 +1,5 @@
 package com.onsystem.pantheon.authorizationserver.services;
 
-import com.onsystem.pantheon.authorizationserver.mapper.AMapperOAuth2Authorization;
 import com.onsystem.pantheon.authorizationserver.repositories.OAuth2AuthorizationRepository;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.criteria.Path;

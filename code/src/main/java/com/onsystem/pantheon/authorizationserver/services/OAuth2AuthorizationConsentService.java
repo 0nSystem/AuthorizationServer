@@ -1,7 +1,5 @@
 package com.onsystem.pantheon.authorizationserver.services;
 
-import com.onsystem.pantheon.authorizationserver.entities.OAuth2AuthorizationConsentId;
-import com.onsystem.pantheon.authorizationserver.mapper.IMapperOAuthAuthorizationConsent;
 import com.onsystem.pantheon.authorizationserver.repositories.OAuth2AuthorizationConsentRepository;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
 import org.springframework.transaction.annotation.Transactional;
