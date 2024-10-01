@@ -6,10 +6,12 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_AUTHORIZATION;
+
 @Getter
 @Setter
 @Entity
-@Table(name = "authorization_server_settings", schema = "authorization")
+@Table(name = "authorization_server_settings", schema = SCHEME_AUTHORIZATION)
 public class AuthorizationServerSettings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

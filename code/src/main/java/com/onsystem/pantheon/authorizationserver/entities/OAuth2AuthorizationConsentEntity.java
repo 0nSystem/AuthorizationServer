@@ -12,11 +12,13 @@ import org.hibernate.type.SqlTypes;
 
 import java.util.Set;
 
+import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_AUTHORIZATION;
+
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "oauth2_authorization_consent", schema = "authorization")
+@Table(name = "oauth2_authorization_consent", schema = SCHEME_AUTHORIZATION)
 public class OAuth2AuthorizationConsentEntity {
     @EmbeddedId
     private Oauth2AuthorizationConsentId id;

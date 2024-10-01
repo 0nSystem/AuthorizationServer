@@ -17,11 +17,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.onsystem.pantheon.authorizationserver.Constans.SCHEME_AUTHORIZATION;
+
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "oauth2_authorization", schema = "authorization")
+@Table(name = "oauth2_authorization", schema = SCHEME_AUTHORIZATION)
 public class Oauth2AuthorizationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
