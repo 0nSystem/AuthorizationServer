@@ -16,7 +16,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.*;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper()
 @ConditionalOnProperty(name = "auth.mock", havingValue = "false")
 @Component
 public interface IMapperAuthorization {
@@ -41,8 +41,7 @@ public interface IMapperAuthorization {
         oAuth2Authorization.setState(state);
 
         //Authorization code
-        OAuth2Authorization.Token<OAuth2AuthorizationCode> authorizationCode =
-                authorization.getToken(OAuth2AuthorizationCode.class);
+        OAuth2Authorization.Token<OAuth2AuthorizationCode> authorizationCode = authorization.getToken(OAuth2AuthorizationCode.class);
         if (authorizationCode != null) {
             Optional.ofNullable(authorizationCode.getToken().getIssuedAt()).ifPresent(oAuth2Authorization::setAuthorizationCodeIssuedAt);
             Optional.ofNullable(authorizationCode.getToken().getExpiresAt()).ifPresent(oAuth2Authorization::setAuthorizationCodeExpiresAt);

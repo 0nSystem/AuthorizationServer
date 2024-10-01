@@ -10,7 +10,7 @@ CREATE SCHEMA IF NOT EXISTS applications;
 CREATE SCHEMA IF NOT EXISTS enterprise;
 
 
-CREATE TABLE IF NOT EXISTS users."userEntity"
+CREATE TABLE IF NOT EXISTS users."user"
 (
     id_user        SERIAL,
     name           character varying(50) COLLATE pg_catalog."default"  NOT NULL,
@@ -19,9 +19,9 @@ CREATE TABLE IF NOT EXISTS users."userEntity"
     login          character varying(30) COLLATE pg_catalog."default"  NOT NULL UNIQUE,
     password       character varying(255) COLLATE pg_catalog."default" NOT NULL,
     high_date      timestamp                                           NOT NULL,
-    high_id_user   integer references users.userEntity (id_user),
+    high_id_user   integer references users.user (id_user),
     delete_date    timestamp,
-    delete_id_user integer references users.userEntity (id_user),
+    delete_id_user integer references users.user (id_user),
     CONSTRAINT user_pk PRIMARY KEY (id_user)
 );
 
@@ -31,9 +31,9 @@ CREATE TABLE IF NOT EXISTS applications.application
     name           character varying(100) COLLATE pg_catalog."default" NOT NULL,
     description    character varying(255) COLLATE pg_catalog."default",
     high_date      timestamp                                           NOT NULL,
-    high_id_user   integer                                             NOT NULL references users.userEntity (id_user),
+    high_id_user   integer                                             NOT NULL references users.user (id_user),
     delete_date    timestamp,
-    delete_id_user integer references users.userEntity (id_user),
+    delete_id_user integer references users.user (id_user),
     CONSTRAINT applications_pk PRIMARY KEY (id_application)
 );
 

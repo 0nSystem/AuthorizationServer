@@ -1,7 +1,8 @@
 package com.onsystem.pantheon.authorizationserver.integration.authorization;
 
+import com.onsystem.pantheon.authorizationserver.entities.AuthorizationServerSettings;
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -9,14 +10,12 @@ import org.springframework.http.*;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
-import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = {"postgres"})
 public class TokenEndpointTest {
+
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -111,5 +110,5 @@ public class TokenEndpointTest {
         return restTemplate.postForEntity(tokenEndpoint, body, OAuth2AccessTokenResponse.class);
 
     }
-     */
+    */
 }
