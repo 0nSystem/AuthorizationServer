@@ -1,4 +1,3 @@
-
 CREATE DATABASE management;
 \c management;
 
@@ -82,7 +81,7 @@ CREATE TABLE IF NOT EXISTS "authorization".oauth2_authorization
     registered_client_id          UUID         NOT NULL,
     principal_name                varchar(200) NOT NULL,
     authorization_grant_type      varchar(100) NOT NULL,
-    authorized_scopes             varchar(1000)         DEFAULT NULL,
+    authorized_scopes             varchar(100)[]        DEFAULT NULL,
     attributes                    json                  DEFAULT NULL,
     state                         varchar(500)          DEFAULT NULL,
     authorization_code_value      text                  DEFAULT NULL,
@@ -117,8 +116,8 @@ CREATE TABLE IF NOT EXISTS "authorization".oauth2_authorization
 
 CREATE TABLE "authorization".oauth2_authorization_consent
 (
-    registered_client_id varchar(100)  NOT NULL,
-    principal_name       varchar(200)  NOT NULL,
+    registered_client_id UUID           NOT NULL,
+    principal_name       varchar(200)   NOT NULL,
     authorities          varchar(200)[] NOT NULL,
     PRIMARY KEY (registered_client_id, principal_name)
 );

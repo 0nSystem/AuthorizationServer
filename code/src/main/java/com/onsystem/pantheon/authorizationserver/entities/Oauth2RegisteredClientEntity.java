@@ -51,25 +51,25 @@ public class Oauth2RegisteredClientEntity {
     private String clientName;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(name = "client_authentication_methods", columnDefinition = "varchar [](50) not null")
+    @Column(name = "client_authentication_methods", columnDefinition = "varchar(50)[] not null")
     private Set<String> clientAuthenticationMethods;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(name = "authorization_grant_types", columnDefinition = "varchar [](50) not null")
+    @Column(name = "authorization_grant_types", columnDefinition = "varchar(100)[] not null")
     private Set<String> authorizationGrantTypes;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @ColumnDefault("NULL")
-    @Column(name = "redirect_uris", columnDefinition = "varchar [](1000)")
+    @Column(name = "redirect_uris", columnDefinition = "varchar(1000)[]")
     private Set<String> redirectUris;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @ColumnDefault("NULL")
-    @Column(name = "post_logout_redirect_uris", columnDefinition = "varchar [](1000)")
+    @Column(name = "post_logout_redirect_uris", columnDefinition = "varchar(1000)[]")
     private Set<String> postLogoutRedirectUris;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(name = "scopes", columnDefinition = "varchar [](50) not null")
+    @Column(name = "scopes", columnDefinition = "varchar(50)[] not null")
     private Set<String> scopes;
 
     @NotNull

@@ -45,7 +45,7 @@ public class Oauth2AuthorizationEntity {
 
     @Size(max = 1000)
     @ColumnDefault("NULL")
-    @Column(name = "authorized_scopes", length = 1000)
+    @Column(name = "authorized_scopes", columnDefinition = "varchar(50)[] not null", length = 1000)
     @JdbcTypeCode(SqlTypes.ARRAY)
     private String[] authorizedScopes;
 

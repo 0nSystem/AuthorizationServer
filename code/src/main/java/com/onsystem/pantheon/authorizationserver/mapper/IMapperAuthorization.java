@@ -16,9 +16,9 @@ import org.springframework.util.StringUtils;
 
 import java.util.*;
 
-@Mapper()
 @ConditionalOnProperty(name = "auth.mock", havingValue = "false")
 @Component
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface IMapperAuthorization {
 
 
