@@ -96,12 +96,7 @@ public interface IMapperAuthorization {
         return oAuth2Authorization;
     }
 
-    default OAuth2Authorization toOAuth2Authorization(Oauth2AuthorizationEntity oAuth2Authorization) {
-
-        //Oauth2Authorization require entity RegisteredClient to make
-        final RegisteredClient registeredClient = RegisteredClient.withId(String.valueOf(oAuth2Authorization.getRegisteredClientId())) //TODO review
-                .build();
-
+    default OAuth2Authorization toOAuth2Authorization(Oauth2AuthorizationEntity oAuth2Authorization, RegisteredClient registeredClient) {
         final org.springframework.security.oauth2.server.authorization.OAuth2Authorization.Builder authorizationBuilder = org.springframework.security.oauth2.server.authorization.OAuth2Authorization.withRegisteredClient(registeredClient)
                 .id(String.valueOf(oAuth2Authorization.getId()))
                 .principalName(oAuth2Authorization.getPrincipalName())
@@ -133,7 +128,8 @@ public interface IMapperAuthorization {
                     oAuth2Authorization.getOidcIdTokenValue(),
                     oAuth2Authorization.getOidcIdTokenIssuedAt(),
                     oAuth2Authorization.getOidcIdTokenExpiresAt(),
-                    (Map<String, Object>) oAuth2Authorization.getOidcIdTokenMetadata().get(org.springframework.security.oauth2.server.authorization.OAuth2Authorization.Token.CLAIMS_METADATA_NAME)
+                    //(Map<String, Object>) oAuth2Authorization.getOidcIdTokenMetadata().get(org.springframework.security.oauth2.server.authorization.OAuth2Authorization.Token.CLAIMS_METADATA_NAME)
+                    oAuth2Authorization.getOidcIdTokenMetadata()
             );
             authorizationBuilder.token(oidcIdToken, (metadata) -> metadata.putAll(oAuth2Authorization.getOidcIdTokenMetadata()));
         }

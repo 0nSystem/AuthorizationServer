@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -21,8 +22,12 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
 
     private OAuth2AuthorizationRepository oAuth2AuthorizationRepository;
     private IMapperAuthorization aMapperOAuth2Authorization;
+    private RegisteredClientRepository registeredClientService;
 
-    public OAuth2AuthorizationServiceImpl(OAuth2AuthorizationRepository oAuth2AuthorizationRepository, IMapperAuthorization aMapperOAuth2Authorization) {
+    public OAuth2AuthorizationServiceImpl(
+            OAuth2AuthorizationRepository oAuth2AuthorizationRepository,
+            IMapperAuthorization aMapperOAuth2Authorization
+    ) {
         this.oAuth2AuthorizationRepository = oAuth2AuthorizationRepository;
         this.aMapperOAuth2Authorization = aMapperOAuth2Authorization;
     }
@@ -44,7 +49,7 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
         final UUID uuid = UUID.fromString(id);
 
         return oAuth2AuthorizationRepository.findById(uuid)
-                .map(aMapperOAuth2Authorization::toOAuth2Authorization)
+                .map(a -> aMapperOAuth2Authorization.toOAuth2Authorization(a, registeredClientService.findByClientId(a.getRegisteredClientId().toString())))
                 .orElse(null);
     }
 
@@ -52,7 +57,7 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
     public OAuth2Authorization findByToken(final @NotEmpty String token, final @Nullable OAuth2TokenType tokenType) {
         Assert.hasText(token, "token cannot be empty");
         return oAuth2AuthorizationRepository.findOne(specificationFindByToken(token, tokenType))
-                .map(aMapperOAuth2Authorization::toOAuth2Authorization)
+                .map(a -> aMapperOAuth2Authorization.toOAuth2Authorization(a, registeredClientService.findByClientId(a.getRegisteredClientId().toString())))
                 .orElse(null);
     }
 

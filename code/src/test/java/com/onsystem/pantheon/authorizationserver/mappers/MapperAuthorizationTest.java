@@ -3,44 +3,43 @@ package com.onsystem.pantheon.authorizationserver.mappers;
 
 import com.onsystem.pantheon.authorizationserver.entities.Oauth2AuthorizationEntity;
 import com.onsystem.pantheon.authorizationserver.mapper.IMapperAuthorization;
+import com.onsystem.pantheon.authorizationserver.mapper.IMapperAuthorizationImpl;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2DeviceCode;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
-import org.springframework.security.oauth2.core.OAuth2UserCode;
+import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationCode;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.util.CollectionUtils;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@SpringBootTest
+
 public class MapperAuthorizationTest {
 
-    @Autowired
-    private IMapperAuthorization iMapperAuthorization;
+
+    private IMapperAuthorization mapperAuthorization = new IMapperAuthorizationImpl();
 
 
     @Test
     public void whenMapperAuthorizationEntityToAuthorization() {
         final Oauth2AuthorizationEntity entity = new Oauth2AuthorizationEntity();
-        entity.setId(UUID.randomUUID());
         entity.setRegisteredClientId(UUID.randomUUID());
 
         entity.setPrincipalName("example_user");
         entity.setAuthorizationGrantType("authorization_code");
+
 
         entity.setAuthorizedScopes(new String[]{"read", "write"});
         entity.setAttributes(Map.of("ip", "192.168.0.1", "user_agent", "Mozilla/5.0"));
@@ -60,7 +59,7 @@ public class MapperAuthorizationTest {
         entity.setOidcIdTokenValue("oidc_id_token_example");
         entity.setOidcIdTokenIssuedAt(Instant.now());
         entity.setOidcIdTokenExpiresAt(Instant.now().plusSeconds(3600));
-        entity.setOidcIdTokenMetadata(Map.of("issuer", "https://example.com"));
+        entity.setOidcIdTokenMetadata(Map.of("issuer", "https://example.com", "metadata.token.claims", "scope_example"));
 
         entity.setRefreshTokenValue("refresh_token_example");
         entity.setRefreshTokenIssuedAt(Instant.now());
@@ -77,17 +76,18 @@ public class MapperAuthorizationTest {
         entity.setDeviceCodeExpiresAt(Instant.now().plusSeconds(600));
         entity.setDeviceCodeMetadata(Map.of("device_ip", "192.168.0.100"));
 
-        final OAuth2Authorization oauthMapped = iMapperAuthorization.toOAuth2Authorization(entity);
-        validationMapperAuthorizationEntityToAuthorization(entity, oauthMapped);
+        final RegisteredClient registeredClient = createRegisteredClient();
+        final OAuth2Authorization oauthMapped = mapperAuthorization.toOAuth2Authorization(entity, registeredClient);
+        validationMapperAuthorizationEntityToAuthorization(entity, oauthMapped, registeredClient);
     }
 
     public void validationMapperAuthorizationEntityToAuthorization(
-            final Oauth2AuthorizationEntity entity, final OAuth2Authorization authorization
+            final Oauth2AuthorizationEntity entity, final OAuth2Authorization authorization, final RegisteredClient registeredClient
     ) {
         Assert.assertNotNull(entity);
         Assert.assertNotNull(authorization);
 
-        assertEquals(entity.getId().toString(), authorization.getId());
+        assertEquals(registeredClient.getId(), authorization.getId());
         assertEquals(entity.getRegisteredClientId().toString(), authorization.getRegisteredClientId());
         assertEquals(entity.getPrincipalName(), authorization.getPrincipalName());
 
@@ -139,4 +139,41 @@ public class MapperAuthorizationTest {
         assertEquals(entity.getDeviceCodeExpiresAt(), deviceCode.getToken().getExpiresAt());
     }
 
+    public static RegisteredClient createRegisteredClient() {
+        TokenSettings tokenSettings = TokenSettings.builder()
+                .authorizationCodeTimeToLive(Duration.ofMinutes(10))
+                .accessTokenTimeToLive(Duration.ofMinutes(30))
+                .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+                .deviceCodeTimeToLive(Duration.ofMinutes(5))
+                .reuseRefreshTokens(true)
+                .refreshTokenTimeToLive(Duration.ofHours(1))
+                .idTokenSignatureAlgorithm(SignatureAlgorithm.RS256)
+                .x509CertificateBoundAccessTokens(false)
+                .build();
+        ClientSettings settings = ClientSettings.builder()
+                .requireProofKey(true)
+                .requireAuthorizationConsent(true)
+                .jwkSetUrl("https://example.com/jwks.json")
+                .tokenEndpointAuthenticationSigningAlgorithm(SignatureAlgorithm.RS256)
+                .x509CertificateSubjectDN("CN=Example")
+                .build();
+        RegisteredClient registeredClient = RegisteredClient.withId("client-id-123")
+                .clientId("my-client-id")
+                .clientSecret("my-secret")
+                .clientName("My Client")
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri("https://example.com/callback")
+                .scope("read")
+                .clientAuthenticationMethods(l -> l.addAll(List.of(ClientAuthenticationMethod.CLIENT_SECRET_BASIC, ClientAuthenticationMethod.CLIENT_SECRET_POST)))
+                .authorizationGrantTypes(l -> l.addAll(List.of(AuthorizationGrantType.AUTHORIZATION_CODE, AuthorizationGrantType.REFRESH_TOKEN)))
+                .redirectUris(l -> l.addAll(List.of("https://example.com/callback")))
+                .postLogoutRedirectUris(l -> l.addAll(List.of("https://example.com/logout")))
+                .scopes(l -> l.addAll(List.of("read", "write")))
+                .clientSettings(settings)
+                .tokenSettings(tokenSettings)
+                .build();
+
+
+        return registeredClient;
+    }
 }
